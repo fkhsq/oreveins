@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "oreveins",
+  "version": "${version}",
+
+  "name": "OreVeins",
+  "description": "一个为 Minecraft 1.20.1 添加矿脉式矿石生成的 Fabric 模组。让矿石以更大的矿脉形式生成，增加采矿的乐趣和资源丰富度。",
+  "authors": ["OreVeins Developer"],
+  "contact": {},
+
+  "license": "All Rights Reserved",
+
+  "entrypoints": {
+    "main": [
+      "com.oreveins.OreVeinMod"
+    ]
+  },
+
+  "mixins": [
+    "oreveins.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric-api": ">=0.92.1",
+    "minecraft": "~1.20.1",
+    "java": ">=17"
+  }
+}

@@ -1,0 +1,18 @@
+// Gradle 设置文件 - 配置插件管理和仓库
+// 注意：fabric-loom 插件的仓库必须放在 pluginManagement.repositories 中
+// 而不能只放在 build.gradle 的 repositories 中
+
+pluginManagement {
+    repositories {
+        // Fabric Maven 仓库 - 存放 fabric-loom 插件
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        // Gradle 插件门户 - 官方插件仓库
+        gradlePluginPortal()
+    }
+}
+
+// 包含根项目
+rootProject.name = 'oreveins'

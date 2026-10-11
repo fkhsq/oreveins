@@ -1,0 +1,78 @@
+// Fabric Loom 插件 - 提供 Minecraft 模组开发所需的全部功能
+// 版本号硬编码（Gradle plugins 块约定上不支持引用外部变量，IDE 会误报红色波浪线）
+plugins {
+    id 'fabric-loom' version '1.1.14'
+}
+
+// 项目基本信息 - 从 gradle.properties 读取
+version = project.mod_version
+group = project.maven_group
+base {
+    archivesName = project.archives_base_name
+}
+
+// ============================================
+// 仓库配置 - 用于下载依赖
+// ============================================
+repositories {
+    // Fabric Maven - 存放 Yarn mappings、Fabric Loader、Fabric API
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    // Maven Central - 兜底，部分依赖可能在这里
+    mavenCentral()
+}
+
+// ============================================
+// 依赖配置
+// ============================================
+dependencies {
+    // Minecraft 本体
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    // Yarn 反混淆映射 :v2 表示 Yarn 的版本格式
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+    // Fabric Loader - 模组加载器（运行时必需）
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API - 提供各类模组开发 API（可选但推荐，后续开发会用到）
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+// ============================================
+// processResources - 处理资源文件
+// 在构建时将 gradle.properties 中的版本号注入到 fabric.mod.json
+// ============================================
+processResources {
+    // 设置文件编码
+    filteringCharset = 'UTF-8'
+    // 声明依赖属性，让 Gradle 知道文件变化时需要重新处理
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+
+    // 匹配 fabric.mod.json，用上面定义的属性替换其中的占位符
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version
+    }
+}
+
+// ============================================
+// Java 版本配置 - 使用 Java 17
+// ============================================
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    // 生成 sources jar（方便查看反混淆源码）
+    withSourcesJar()
+}
+
+// 编译选项 - 指定 Java 17 目标
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
