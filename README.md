@@ -11,11 +11,11 @@ Replaces vanilla scattered ore dots with sparse but complete branching vein stru
 
 ## 特性 | Features
 
-- **统一权重矿脉池** — 按权重抽取矿种，主世界/下界各 1 个 placed_feature
+- **统一权重矿脉池** — 按权重抽取矿种，主世界/下界各 1 个 placed_feature，
   Unified weighted ore pool — weighted ore selection, one placed_feature per dimension
-- **洞穴智能检测** — 空气密度扫描，大矿洞多条贴壁矿脉、小矿洞单条
+- **洞穴智能检测** — 空气密度扫描，大矿洞多条贴壁矿脉、小矿洞单条，
   Cave-aware generation — air-density scanning, multiple wall veins in large caves, one in small caves
-- **第三方矿石自动矿脉化** — 自动收集模组矿石并注入矿脉池
+- **第三方矿石自动矿脉化** — 自动收集模组矿石并注入矿脉池，
   Third-party ore auto-injection — auto-collects modded ores into the vein pool
 
 ## 安装 | Installation
