@@ -68,12 +68,21 @@ public final class VeinAutoInjection {
         }
 
         try {
-            // ---- 维度分类 ----
+            // ---- 维度分类（白名单）----
             // 末地群系：本模组未接管末地矿石，完全跳过（不移除、不入池）
             if (selection.hasTag(BiomeTags.IS_END)) {
                 return;
             }
             boolean nether = selection.hasTag(BiomeTags.IS_NETHER);
+
+            // Bug 修复：统一矿脉只注入主世界 / 下界群系（见 VeinInjection）。
+            // 若群系既不属于主世界也不属于下界（如暮色森林、Aether 等自定义维度），
+            // 此处移除其第三方矿石特征后不会有统一矿脉接管 —— 会导致该维度矿石
+            // 彻底消失。因此非主世界 / 非下界的群系必须整体跳过。
+            // 说明：IS_END 判断在此之上已提前返回，此处只需兜住其余自定义维度。
+            if (!nether && !selection.hasTag(BiomeTags.IS_OVERWORLD)) {
+                return;
+            }
 
             // ---- 特征列表：外层索引 = 生成步骤，内层 = 该步骤的放置特征 ----
             // 此时读到的是包括其他模组先前修改在内的最新状态
@@ -83,9 +92,17 @@ public final class VeinAutoInjection {
 
             int swapCount = 0;
             for (int step = 0; step < features.size() && step < steps.length; step++) {
+                // Bug 修复：某些生成步骤的特征列表可能为 null（空步骤未初始化）。
+                // 直接遍历会抛 NPE 并被外层 catch 吞掉，导致该群系的第三方矿石
+                // 全部无法矿脉化（降级为原方式生成）。取出后先判空再遍历。
+                RegistryEntryList<PlacedFeature> stepList = features.get(step);
+                if (stepList == null) {
+                    continue;
+                }
+
                 // 先收集本步骤命中的原特征键，再统一处理（避免边遍历边修改）
                 List<RegistryKey<PlacedFeature>> hits = null;
-                for (RegistryEntry<PlacedFeature> entry : features.get(step)) {
+                for (RegistryEntry<PlacedFeature> entry : stepList) {
                     if (entry.getKey().map(VeinAutoInjector.PENDING::containsKey).orElse(false)) {
                         if (hits == null) {
                             hits = new ArrayList<>();

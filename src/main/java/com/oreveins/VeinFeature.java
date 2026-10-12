@@ -138,7 +138,7 @@ public class VeinFeature extends Feature<VeinConfig> {
      *
      * 矿洞感知机制：
      *   - 当 cursor 处于空气（矿洞）时，扫描 6 正交邻居，在矿洞壁面放置矿石，
-     *     让矿脉裸露在矿洞表面（独立预算 ≈ 15%，不消耗主脉额度）；
+     *     让矿脉裸露在矿洞表面（贴壁配额 ≈ 15%，同样计入总预算、不额外增量）；
      *   - 当 cursor 连续处于空气超过 2 步时，方向向量向最近的岩壁偏转，
      *     让矿脉主动绕过空洞而非径直穿过（避免被砍成两半）；
      *   - 穿越空气时 placed 计数不变，主脉总长度和密度不受矿洞影响。
@@ -149,7 +149,9 @@ public class VeinFeature extends Feature<VeinConfig> {
     private void walk(StructureWorldAccess world, Random random, VeinConfig config,
                       BlockPos.Mutable cursor, double[] dir, int steps, int budget,
                       int[] placed, List<BlockPos> pathRecorder, int[] bounds) {
-        // 矿洞壁面贴附的独立预算（约 15%，用于在矿洞裸露面放矿）
+        // 矿洞壁面贴附的配额上限（约总额度的 15%）：
+        // 注意 —— 贴壁放置的方块同样计入总预算 placed[0]（保证矿脉总量守恒），
+        // 此处只是限制"贴壁放矿"这一行为最多占用多少额度，并非额外增量预算。
         int wallAttachBudget = Math.max(1, (int) (budget * 0.15));
         int wallAttached = 0; // 已贴附到壁面的方块数
         // 连续处于空气的步数计数（激活方向引力）

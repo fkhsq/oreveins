@@ -34,6 +34,6 @@ public class OreVeinMod implements ModInitializer {
         // 不影响原版矿物（minecraft 命名空间全排除）与本模组自身特征
         VeinAutoInjection.register();
 
-        LOGGER.info("OreVeins 模组初始化完成！版本: 2.0.0（统一权重矿脉）");
+        LOGGER.info("OreVeins 模组初始化完成！版本: 2.0.1（统一权重矿脉）");
     }
 }
